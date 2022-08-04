@@ -1,4 +1,6 @@
-import axios from "axios";
+import { ApiResponse } from "@/types/data";
+import { Toast } from "antd-mobile";
+import axios, { AxiosError } from "axios";
 
 const http = axios.create({
   baseURL:'http://geek.itheima.net/v1_0/',
@@ -15,7 +17,15 @@ http.interceptors.request.use((config) => {
 // 添加响应拦截器
 http.interceptors.response.use((response) => {
   return response
-},(error) => {
+},(error:AxiosError<ApiResponse>) => {
+  if(!error){
+    Toast.show('服务器繁忙')
+  }else{
+    Toast.show({
+      content:error.response?.data.message,
+      icon:'fail'
+    })
+  }
   return Promise.reject(error)
 })
 
