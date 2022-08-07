@@ -1,8 +1,9 @@
 import { useInitState } from '@/hook/useInitState'
-import { patchProfileActionCreator, profileActionCreator } from '@/store/actions/profile'
-import { Button, List, DatePicker, NavBar, Popup, Toast } from 'antd-mobile'
+import { logoutActionCreator, patchProfileActionCreator, profileActionCreator, updateAvatarActionCreator } from '@/store/actions/profile'
+import { Button, List, DatePicker, NavBar, Popup, Toast, Dialog } from 'antd-mobile'
 import classNames from 'classnames'
-import { useState } from 'react'
+import dayjs from 'dayjs'
+import { useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import EditInput from '../EditInput'
@@ -31,6 +32,8 @@ const ProfileEdit = () => {
     visible:false,
     type:''
   })
+  const fileRef = useRef<HTMLInputElement>(null)
+  const [datePicker, setDatePicker] = useState(false)
   return (
     <div className={styles.root}>
       <div className="content">
@@ -104,22 +107,43 @@ const ProfileEdit = () => {
             arrow extra={profile.gender === 1 ? '男' : '女'}>
               性别
             </Item>
-            <Item arrow extra={'1999-9-9'}>
+            <Item 
+            onClick={()=>setDatePicker(true)}
+            arrow extra={dayjs(profile.birthday).format('YYYY-MM-DD')}>
               生日
             </Item>
           </List>
 
           <DatePicker
-            visible={false}
+            visible={datePicker}
             value={new Date()}
+            onCancel={()=>{setDatePicker(false)}}
+            onConfirm={async(e)=>{
+              const birthday = dayjs(e).format('YYYY-MM-DD')
+              await dispatch(patchProfileActionCreator({birthday}))
+              setDatePicker(false)
+            }}
             title="选择年月日"
-            min={new Date(1900, 0, 1, 0, 0, 0)}
+            min={new Date(1949, 0, 1, 0, 0, 0)}
             max={new Date()}
           />
         </div>
 
         <div className="logout">
-          <Button className="btn">退出登录</Button>
+          <Button
+            onClick={()=>{
+              Dialog.show({
+                title:'是否退出登录',
+                closeOnAction:true,
+                actions:[[
+                  {key:'cancel',text:'取消'},
+                  {key:'confirm',text:'确定',danger:true,onClick:async()=>{
+                    await dispatch(logoutActionCreator())
+                  }}
+                ]]
+              })
+            }}
+          className="btn">退出登录</Button>
         </div>
       </div>
       <Popup destroyOnClose   bodyStyle={{ height: '100%' }} visible={pop1up.visible} position="right">
@@ -141,11 +165,37 @@ const ProfileEdit = () => {
         }}/>
       </Popup>
       <Popup destroyOnClose position='bottom' visible={pop2up.visible}>
-        <EditList type={pop2up.type} onClose={()=>setPop2up({
+        <EditList 
+        onUpdate={async(type:string,value:number)=>{
+          if(type === 'gender'){
+            await dispatch(patchProfileActionCreator({gender:value}))
+          }
+          if(type === 'photo'){
+            fileRef.current!.click()
+          }
+          setPop2up({
+            type:'',
+            visible:false
+          })
+        }}
+        type={pop2up.type} onClose={()=>setPop2up({
           type:'',
           visible:false
         })}/>
       </Popup>
+      <input type="file" ref={fileRef} hidden 
+          onChange={async(e)=>{
+            const file = e.target.files![0]
+            const fd = new FormData()
+            fd.append('photo',file)
+            await dispatch(updateAvatarActionCreator(fd))
+            Toast.show('修改成功')
+            setPop2up({
+              type:"",
+              visible:false
+            })
+          }}
+        />
     </div>
   )
 }
