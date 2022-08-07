@@ -1,18 +1,21 @@
+import classNames from 'classnames'
 import React from 'react'
-import classnames from 'classnames'
-type IconPropType = {
-  name:string,
-  className?:string,
-  onClick?:()=>void
+
+// 组件自己的props类型
+interface IconPropsType {
+  name: string
+  className?: string
+  onClick?: () => void
 }
 
-export default function Icon(props:IconPropType) {
-  const { name,className,onClick } = props
+export default function Icon({ className, onClick, name }: IconPropsType) {
   return (
-    <svg className={classnames('icon',className)}
+    <svg
+      className={classNames('icon', className)}
       onClick={onClick}
-      aria-hidden>
-        <use xlinkHref={`#${name}`}/>
+      aria-hidden="true"
+    >
+      <use xlinkHref={`#${name}`}></use>
     </svg>
   )
 }

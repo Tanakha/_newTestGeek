@@ -1,3 +1,5 @@
+// 全局样式
+
 html,
 body {
   margin: 0;
@@ -16,6 +18,7 @@ h3 {
   margin: 0;
 }
 
+// 这里去覆盖antd-mobile的默认主题色
 :root:root {
   --adm-color-primary: #fc6627;
   --adm-color-success: #00b578;
@@ -29,10 +32,19 @@ h3 {
   --adm-color-text: #333333;
 }
 
+// svg图标的基本样式
 .icon {
-  width: 1em; 
+  width: 1em;
   height: 1em;
   vertical-align: -0.15em;
   fill: currentColor;
   overflow: hidden;
+}
+
+// 重置样式
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  box-sizing: border-box;
 }

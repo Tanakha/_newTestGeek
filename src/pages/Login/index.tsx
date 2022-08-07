@@ -30,7 +30,7 @@ export default function Login() {
     const mobileError = form.getFieldError('mobile')
 
     if(mobileError.length > 0){
-     return iptRef.current!.focus()
+      return iptRef.current!.focus()
     }
 
     await dispatch(codeActionCreator(mobile))
