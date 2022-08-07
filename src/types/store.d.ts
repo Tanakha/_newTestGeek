@@ -1,6 +1,6 @@
 import store from "@/store"
 import { ThunkAction } from "redux-thunk"
-import { Token } from "./data"
+import { Profile, Token, User } from "./data"
 
 export type loginAction = {
   type:'login/login',
@@ -12,7 +12,17 @@ export type codeAction = {
   code:string
 }
 
-export type ActionType = loginAction
+export type userAction = {
+  type:'profile/setUser',
+  payload:User
+}
+
+export type profileAction = {
+  type:'profile/setProfile',
+  payload:Profile
+}
+
+export type ActionType = loginAction | userAction | profileAction
 
 export type RootState = ReturnType<typeof store.getState>
 
