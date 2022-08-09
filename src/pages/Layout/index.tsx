@@ -1,3 +1,4 @@
+import AuthRoute from '@/components/AuthRoute'
 import Icon from '@/components/Icon'
 import { TabBar } from 'antd-mobile'
 import React from 'react'
@@ -24,7 +25,7 @@ export default function Layout() {
     <div className={styles.root}>
       <Switch>
         <Route exact path="/home" component={Home}/>
-        <Route path="/home/Profile" component={Profile}/>
+        <AuthRoute path="/home/Profile" component={Profile}/>
         <Route path="/home/question" component={Question}/>
         <Route path="/home/video" component={Video}/>
       </Switch>

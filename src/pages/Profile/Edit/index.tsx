@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import dayjs from 'dayjs'
 import { useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import EditInput from '../EditInput'
 import EditList from '../EditList'
 import styles from './index.module.scss'
@@ -23,6 +23,7 @@ interface Pop2upType {
 const ProfileEdit = () => {
   const { profile } = useInitState(profileActionCreator).profile
   const history = useHistory()
+  const location = useLocation<{from:string}>()
   const dispatch = useDispatch()
   const [pop1up, setPop1up] = useState<Pop1upType>({
     visible:false,
@@ -139,6 +140,7 @@ const ProfileEdit = () => {
                   {key:'cancel',text:'取消'},
                   {key:'confirm',text:'确定',danger:true,onClick:async()=>{
                     await dispatch(logoutActionCreator())
+                    history.push('/home')
                   }}
                 ]]
               })
